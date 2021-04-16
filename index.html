@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="root">
+        <!-- Basico de Modelo -->
+        <input v-model="greeting">
+        <p>
+            {{ greeting }}
+        </p>
+        <hr>
+        <div v-show="count_1 === 1">
+            Red
+        </div>
+        <div v-show="count_1 === 2">
+            Green
+        </div>
+        <!-- Baisco de condicional -->
+        <div v-if="count_2 === 1">
+            Nao renderiza aqui
+        </div>
+        <div v-else-if="count_2 === 2">
+            Nem aqui
+        </div>
+        <!-- Renderiza mesmo se a condicao nao é alcançada -->
+        <div v-show="count_2 === 1">
+            Aqui fica com display none
+        </div>
+        <hr>
+        <!-- V-bind para deixar o botao desabilitado e classe -->
+        <!-- object sintax -->
+        <!-- <input type="text" v-model="email" :class="{red: email.length < 2}"> -->
+        <!-- array sintax -->
+        <input type="text" v-model="email" :class="[email.length < 2 ? 'red' : 'green']">
+        <!-- <button onclick="alert('signed up')" v-bind:disabled="email.length < 2"> -->
+        <button onclick="alert('signed up')" :disabled="email.length < 2">
+            Submit
+        </button>
+        <hr>
+        <!-- v-tex igual ao {{}} -->
+        <p v-text="email"></p>
+        <!-- v-html tipo o v-text, mas insere html, digita <h1>AQUI</h1> no input -->
+        <p v-html="email"></p>
+        <hr>
+        <!-- v-once renderiza só uma vez no DOM e depois deixa o campo estático -->
+        <input type="text" v-model="eterno">
+        <p v-once>{{eterno}}</p>
+        <p>{{ eterno }}</p>
+        <!-- fazendo loop com array-->
+        CATS
+        <ul>
+            <li v-for="cat in cats">{{cat}}</li>
+        </ul>
+        <!-- fazendo loop com objeto + filtro -->
+        <!-- <ul>
+            <li v-for="cat in cats_2">{{cat.name | capitalize }}</li>
+        </ul> -->
+        <cat-list :cats="cats_2" />
+        <hr>
+        <!-- Utilizando v-on -->
+        <input v-model="newCat" @keyup.enter="addCat">
+        <!-- <button v-on:click="addCat">
+            + ADD
+        </button> -->
+        <button @click="addCat">
+            + ADD NEW CAT
+        </button>
+        <hr>
+        <!-- Computed -->
+        {{ kittifyName }}
+
+    </div>
+    <style>
+        .red{
+            border-color: red;
+        }
+        .green{
+            border-color: green;
+        }
+    </style>
+    <script>
+        Vue.component(
+            'cat-list',
+            {
+                props: ['cats'],
+                template:
+                `
+                <ul>
+                    <li v-for="cat in cats">{{ cat.name }}</li>                    
+                </ul>
+                `
+            }
+        );
+
+      new Vue({
+            el: '#root',
+            component:[
+                'cat-list'
+            ],
+            data: {
+                greeting: '',
+                count_1: 1,
+                count_2: 4,
+                email: '',
+                eterno: 'eterno',
+                cats: ['tom','jade','maia'],
+                cats_2:[
+                    {name:'misha'},
+                    {name:'amy'}
+                ],
+                newCat:'',
+            },
+            methods:{
+                addCat: function(){
+                   this.cats_2.push({name: this.newCat});
+                   this.newCat = '';
+                }
+            },
+            filters:{
+                capitalize: function(value){
+                    return value.toUpperCase();
+                }
+            },
+            computed: {
+                kittifyName: function(){
+                    if(this.newCat.length > 1){
+                        return this.newCat + 'y';
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
